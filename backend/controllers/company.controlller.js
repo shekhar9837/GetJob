@@ -11,7 +11,7 @@ export const registerCompany = async (req, res) => {
     if (company) {
       return res.status(400).json({ message: "Company name already exists" });
     }
-    company = await Company.create({
+     company = await Company.create({
       title: companyName,
       userId: req.id,
     });
@@ -23,13 +23,13 @@ export const registerCompany = async (req, res) => {
 //get all company
 export const getCompany = async (req, res) => {
   try {
-    const { userId } = req.id
+    const userId  = req.id
     const companies = await Company.find({ userId });
 
     if (!companies) {
       return res.status(404).json({ message: "No companies found" });
     }
-    return res.status(200).json({companies});
+    return res.status(200).json({message:"all company list", companies});
   } catch (error) {
     console.log(error);
   }
@@ -38,7 +38,7 @@ export const getCompany = async (req, res) => {
 //get company by id
 export const getCompanyById = async (req, res) => {
     try {
-      const { companyId } = req.params.id // Corrected this line
+      const companyId  = req.params.id // Corrected this line
       const company = await Company.findById(companyId); // Corrected this line
   
       if (!company) {
