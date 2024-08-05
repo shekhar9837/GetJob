@@ -7,12 +7,12 @@ import {
 } from "@radix-ui/react-popover";
 import { Avatar, AvatarImage } from "@radix-ui/react-avatar";
 import { LogOut, User2 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export const Navbar = () => {
   const user = false;
   return (
     <div className="bg-white">
-      navbar
       <div className="flex items-center justify-between mx-auto max-w-7xl h-16">
         <div>
           <h1 className="text-2xl font-bold">
@@ -21,9 +21,10 @@ export const Navbar = () => {
         </div>
         <div className="flex items-center gap-12">
           <ul className="flex font-medium items-center gap-5">
-            <li>Home</li>
-            <li>Jobs</li>
-            <li>Browse</li>
+            <Link to="/"><li>Home</li></Link>
+            <Link to="/jobs"><li>Jobs</li></Link>
+            <Link to="/browse"><li>Browse</li></Link>
+            
           </ul>
           {!user ? (
             <div className="flex items-center gap-2">

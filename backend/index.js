@@ -14,7 +14,14 @@ dotenv.config({})
 const app= express()
 app.use(express.json())
 app.use(cookieParser())
-app.use(cors())
+
+const corsOptions = {
+    origin: 'http://localhost:5173',
+    credentials: true, 
+  };
+  
+  app.use(cors(corsOptions));
+ 
 
 app.use("/api/v1/user", userRoute)//user route
 app.use("/api/v1/company", companyRoute)//user route
