@@ -11,7 +11,7 @@ import { toast } from 'sonner'
 import { useDispatch, useSelector } from 'react-redux'
 import { setLoading, setUser } from '@/redux/authSlice'
 import { Loader2 } from 'lucide-react'
-import { USER_API_END_POINT } from '@/utils/constant'
+
 
 const Login = () => {
     const [input, setInput] = useState({
