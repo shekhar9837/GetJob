@@ -6,8 +6,10 @@ import { RadioGroup } from '../ui/radio-group'
 import { Button } from '../ui/button'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import { USER_API_END_POINT } from '@/Utils/constant'
+import { USER_API_END_POINT } from '@/utils/constant'
 import { toast } from 'sonner'
+import { useDispatch, useSelector } from 'react-redux'
+import { setLoading, setUser } from '@/redux/authSlice'
 import { Loader2 } from 'lucide-react'
 
 const Login = () => {
@@ -16,9 +18,9 @@ const Login = () => {
         password: "",
         role: "",
     });
-    const [loading, setLoading] = useState(false)
+    const { loading,user } = useSelector(store => store.auth);
     const navigate = useNavigate();
- 
+    const dispatch = useDispatch();
 
     const changeEventHandler = (e) => {
         setInput({ ...input, [e.target.name]: e.target.value });
@@ -26,8 +28,8 @@ const Login = () => {
 
     const submitHandler = async (e) => {
         e.preventDefault();
-        setLoading(true)
         try {
+            dispatch(setLoading(true));
             const res = await axios.post(`${USER_API_END_POINT}/login`, input, {
                 headers: {
                     "Content-Type": "application/json"
@@ -35,21 +37,26 @@ const Login = () => {
                 withCredentials: true,
             });
             if (res.data.success) {
+                dispatch(setUser(res.data.user));
                 navigate("/");
                 toast.success(res.data.message);
             }
         } catch (error) {
             console.log(error);
-            toast.error(error.response.message);
+            toast.error(error.response.data.message);
         } finally {
-          setLoading(false)
+            dispatch(setLoading(false));
         }
     }
-  
+    useEffect(()=>{
+        if(user){
+            navigate("/");
+        }
+    },[])
     return (
         <div>
             <Navbar />
-            <div className='flex items-center justify-center max-w-7xl mx-auto'>
+            <div className='flex items-center justify-center max-w-4xl mx-auto'>
                 <form onSubmit={submitHandler} className='w-1/2 border border-gray-200 rounded-md p-4 my-10'>
                     <h1 className='font-bold text-xl mb-5'>Login</h1>
                     <div className='my-2'>
@@ -59,7 +66,7 @@ const Login = () => {
                             value={input.email}
                             name="email"
                             onChange={changeEventHandler}
-                            placeholder="patel@gmail.com"
+                            placeholder="john@gmail.com"
                         />
                     </div>
 
@@ -70,7 +77,7 @@ const Login = () => {
                             value={input.password}
                             name="password"
                             onChange={changeEventHandler}
-                            placeholder="patel@gmail.com"
+                            placeholder="password"
                         />
                     </div>
                     <div className='flex items-center justify-between'>

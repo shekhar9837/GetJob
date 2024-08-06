@@ -6,8 +6,10 @@ import { RadioGroup } from '../ui/radio-group'
 import { Button } from '../ui/button'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import { USER_API_END_POINT } from '@/Utils/constant'
+import { USER_API_END_POINT } from '@/utils/constant'
 import { toast } from 'sonner'
+import { useDispatch, useSelector } from 'react-redux'
+import { setLoading } from '@/redux/authSlice'
 import { Loader2 } from 'lucide-react'
 
 const Signup = () => {
@@ -20,8 +22,8 @@ const Signup = () => {
         role: "",
         file: ""
     });
-   
-    const [loading, setLoading] = useState(false)
+    const {loading,user} = useSelector(store=>store.auth);
+    const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const changeEventHandler = (e) => {
@@ -32,8 +34,7 @@ const Signup = () => {
     }
     const submitHandler = async (e) => {
         e.preventDefault();
-        setLoading(true)
-        const formData = new FormData();    //formdata object
+        const formData = new FormData();   
         formData.append("fullname", input.fullname);
         formData.append("email", input.email);
         formData.append("phoneNumber", input.phoneNumber);
@@ -44,28 +45,32 @@ const Signup = () => {
         }
 
         try {
-          console.log(input)
+            dispatch(setLoading(true));
             const res = await axios.post(`${USER_API_END_POINT}/register`, formData, {
                 headers: { 'Content-Type': "multipart/form-data" },
                 withCredentials: true,
             });
             if (res.data.success) {
-              navigate("/login")
-              toast.success(res.data.message);
+                navigate("/login");
+                toast.success(res.data.message);
             }
         } catch (error) {
             console.log(error);
             toast.error(error.response.data.message);
         } finally{
-            setLoading(false)
+            dispatch(setLoading(false));
         }
     }
 
-   
+    useEffect(()=>{
+        if(user){
+            navigate("/");
+        }
+    },[])
     return (
         <div>
             <Navbar />
-            <div className='flex items-center justify-center max-w-7xl mx-auto'>
+            <div className='flex items-center justify-center max-w-4xl mx-auto'>
                 <form onSubmit={submitHandler} className='w-1/2 border border-gray-200 rounded-md p-4 my-10'>
                     <h1 className='font-bold text-xl mb-5'>Sign Up</h1>
                     <div className='my-2'>
@@ -75,7 +80,7 @@ const Signup = () => {
                             value={input.fullname}
                             name="fullname"
                             onChange={changeEventHandler}
-                            placeholder="patel"
+                            placeholder="John Doe"
                         />
                     </div>
                     <div className='my-2'>
@@ -85,7 +90,7 @@ const Signup = () => {
                             value={input.email}
                             name="email"
                             onChange={changeEventHandler}
-                            placeholder="patel@gmail.com"
+                            placeholder="john@gmail.com"
                         />
                     </div>
                     <div className='my-2'>
@@ -105,7 +110,7 @@ const Signup = () => {
                             value={input.password}
                             name="password"
                             onChange={changeEventHandler}
-                            placeholder="patel@gmail.com"
+                            placeholder="password"
                         />
                     </div>
                     <div className='flex items-center justify-between'>
