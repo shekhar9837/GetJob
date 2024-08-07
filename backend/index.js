@@ -10,13 +10,14 @@ import applicationRoute from "./routes/application.route.js";
 dotenv.config();
 
 const app = express();
+const BACKEND_URL = process.env.BACKEND_URI || null;
 
 // middleware
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(cookieParser());
 const corsOptions = {
-    origin:'http://localhost:5173',
+    origin:BACKEND_URL,
     credentials:true
 }
 
